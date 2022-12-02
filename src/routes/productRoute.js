@@ -2,6 +2,8 @@ const express = require("express");
 const multer = require("multer");
 const productController = require("../controller/productController");
 const router = express.Router();
+const checkPermission = require('../middleware/authorization');
+const verifyToken = require('../middleware/authMiddleware');
 
 const storage = multer.diskStorage({
 destination: function (req, file, cb) {
@@ -16,9 +18,9 @@ filename: function (req, file, cb) {
   
 const upload = multer({ storage: storage })
 
-router.post('/add-product', upload.single('product_picture') ,productController.addProduct);
-router.delete('/delete-product/:id' ,productController.deleteProduct);
-router.put('/update-product/:id',upload.single('product_picture') ,productController.updateProduct);
+router.post('/add-product', upload.single('product_picture'),verifyToken , checkPermission(['Admin']) ,productController.addProduct);
+router.delete('/delete-product/:id', verifyToken , checkPermission(['Admin']) ,productController.deleteProduct);
+router.put('/update-product/:id', verifyToken , checkPermission(['Admin']) ,upload.single('product_picture') ,productController.updateProduct);
 router.get('/get-all-product' ,productController.getAllProduct);
 router.get('/get-product/:id' ,productController.getProduct);
 

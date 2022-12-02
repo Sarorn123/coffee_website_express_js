@@ -1,4 +1,8 @@
 const Product = require("../model/Product");
+const fs = require('fs');
+const { promisify } = require('util');
+
+const unlinkAsync = promisify(fs.unlink);
 
 const productController = {
 
@@ -35,9 +39,10 @@ const productController = {
     },
     deleteProduct: async (req, res) => {
         try {
+            const product = await Product.findById(req.params.id);
             const deleteProduct = await Product.findByIdAndDelete(req.params.id);
+            await unlinkAsync("uploads\\"+product.product_picture).catch(() => {});
             res.status(200).json(deleteProduct);
-
         } catch (error) {
             res.status(400).json({ message: error.message });
         }
@@ -71,6 +76,7 @@ const productController = {
     getProduct:  async(req, res) => {
         try {
             const product = await Product.findById(req.params.id);
+           
             res.status(201).json(product);
         } catch (error) {
             res.status(400).json({ message: error.message });

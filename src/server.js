@@ -7,6 +7,7 @@ const path  =require('path');
 // import route 
 const userRoute = require("./routes/userRoute");
 const productRoute = require("./routes/productRoute");
+const homePageRoute = require("./routes/homePageRoute");
 
 const app = express();
 dotenv.config(); 
@@ -27,6 +28,7 @@ app.get('/',authMiddleware,  (req ,res) => {
 // auth 
 app.use('/auth', userRoute);
 app.use('/product', productRoute);
+app.use('/homepage', homePageRoute);
 
 app.listen(process.env.PORT, () => {
     console.log("Server is running on PORT = " + process.env.PORT);
